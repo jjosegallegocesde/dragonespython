@@ -5,6 +5,7 @@ class AliadoDTOPeticion(BaseModel):
     nombres:str 
     ubicacion:str 
     aporteMonetario:float
+    fk_jinete:int
     class Config:
         orm_mode=True
 
@@ -14,6 +15,7 @@ class AliadoDTORespuesta(BaseModel):
     nombres:str 
     ubicacion:str 
     aporteMonetario:float
+    fk_jinete:int
     class Config:
         orm_mode=True
 
@@ -22,6 +24,7 @@ class DragonDTOPeticion(BaseModel):
     edad:int 
     altura:float
     numeroVictorias:int
+    fk_jinete:int
     class Config:
         orm_mode=True
 
@@ -31,6 +34,7 @@ class DragonDTORespuesta(BaseModel):
     edad:int 
     altura:float
     numeroVictorias:int
+    fk_jinete:int
     class Config:
         orm_mode=True
 

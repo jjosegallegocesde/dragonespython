@@ -4,7 +4,7 @@ from typing import List
 from fastapi.params import Depends
 from app.api.schemas.dtos import DragonDTOPeticion,DragonDTORespuesta,JineteDTOPeticion,JineteDTORespuesta, AliadoDTOPeticion, AliadoDTORespuesta
 from app.api.models.tablas import Dragon,Jinete,Aliado
-from app.database.config import SessionLocal
+from app.database.config import SessionLocal, engine
 
 rutas=APIRouter()
 
@@ -21,17 +21,14 @@ def getDB():
 #ENDPOINTS PARA EL API
 @rutas.post("/dragones",response_model=DragonDTORespuesta,summary="Crea un dragon en la BD")
 def crearDragon(datosCliente: DragonDTOPeticion, db: Session = Depends(getDB)):
-    # Verificar si el jinete existe
-    jinete = db.query(Jinete).filter(Jinete.id == datosCliente.fk_jinete).first()
-    if not jinete:
-        raise HTTPException(status_code=400, detail="El jinete proporcionado no existe")
 
     try:
         dragon = Dragon(
             nombres=datosCliente.nombres,
             edad=datosCliente.edad,
             altura=datosCliente.altura,
-            numeroVictorias=datosCliente.numeroVictorias
+            numeroVictorias=datosCliente.numeroVictorias,
+            fk_jinete=datosCliente.fk_jinete
         )
         db.add(dragon)  # orden en bd
         db.commit()  # valido la operación que acabo de realizar
@@ -71,7 +68,8 @@ def crearAliado(datosCliente: AliadoDTOPeticion, db: Session = Depends(getDB)):
         aliado = Aliado(
             nombres=datosCliente.nombres,
             ubicacion=datosCliente.ubicacion,
-            aporteMonetario=datosCliente.aporteMonetario
+            aporteMonetario=datosCliente.aporteMonetario,
+            fk_jinete=datosCliente.fk_jinete
         )
         db.add(aliado)  # orden en bd
         db.commit()  # valido la operación que acabo de realizar
