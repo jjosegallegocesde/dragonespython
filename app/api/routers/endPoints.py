@@ -22,6 +22,11 @@ def getDB():
 @rutas.post("/dragones",response_model=DragonDTORespuesta,summary="Crea un dragon en la BD")
 def crearDragon(datosCliente: DragonDTOPeticion, db: Session = Depends(getDB)):
 
+    #verifiquemos que el fk existe
+    jinete=db.query(Jinete).filter(Jinete.id==datosCliente.fk_jinete).first()
+    if not jinete:
+        raise HTTPException(status_code=400, detail=f"Jinete no existe {datosCliente.fk_jinete}")
+    
     try:
         dragon = Dragon(
             nombres=datosCliente.nombres,
@@ -48,9 +53,10 @@ def buscarDragones(db:Session=Depends(getDB)):
     except Exception as error:
         raise HTTPException(status_code=500,detail="tenemos un problema en el servidor")
 
-@rutas.get("dragones/{id}",response_model=DragonDTORespuesta,summary="servicio para buscar un dragon por id")
+@rutas.get("/dragones/{id}",response_model=DragonDTORespuesta,summary="servicio para buscar un dragon por id")
 def buscarDragonPorId(id:int,db:Session=Depends(getDB)):
     try:
+        print(id)
         dragon=db.query(Dragon).get(id)
         return dragon
     except Exception as error:
